@@ -1,0 +1,40 @@
+JFDML JFormDesigner: "5.1.0.0.9" Java: "1.6.0_26" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+			"$horizontalGroup": "par l {seq {space :::p, par l {comp label2:::p::p, comp label1::l:p::p}, space :::p, par l {seq l {comp button2:::p::p, space :::p, comp button1::::135:x}, comp textField2::::206:x, comp textField1::::206:x}, space :::p}}"
+			"$verticalGroup": "par l {seq l {space :::p, par b {comp textField1::b:p::p, comp label1::b:p::p}, space :::p, par b {comp textField2::b:p::p, comp label2::b:p::p}, space ::8:x, par b {comp button1::b:p::p, comp button2::b:p::p}, space :::p}}"
+		} ) {
+			name: "this"
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "label1"
+				"text": "TorChat ID"
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "label2"
+				"text": "Display Name"
+			} )
+			add( new FormComponent( "javax.swing.JTextField" ) {
+				name: "textField1"
+			} )
+			add( new FormComponent( "javax.swing.JTextField" ) {
+				name: "textField2"
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "button1"
+				"text": "Ok"
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "button1ActionPerformed", true ) )
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "button2"
+				"text": "Cancel"
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "button2ActionPerformed", true ) )
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 5, 5 )
+			"size": new java.awt.Dimension( 310, 135 )
+		} )
+	}
+}

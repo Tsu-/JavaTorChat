@@ -1,0 +1,71 @@
+JFDML JFormDesigner: "5.1.0.0.9" Java: "1.6.0_26" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+			"$horizontalGroup": "par l {seq {space :::p, par l:::p {seq {comp scrollPane1:::p:112:p:1, space :::p, par t {par l {comp button5::l:p::p, comp button2:::p::p}, comp button1:::p::p}, space :::p, comp scrollPane2:::p:112:p:1}, seq l:::1 {comp button4:::p::p, space :::p, comp button3:::::x}}, space :::p}}"
+			"$verticalGroup": "par l {seq {space :::p, par l {seq t {comp button1:::p::p, space :::p, comp button5:::p::p, space :p:65:p, comp button2:::p::p}, comp scrollPane1::l::228:x:1, comp scrollPane2::t::228:x:1}, space :::p, par b {comp button3::b:p::p, comp button4::b:p::p}, space :::p}}"
+		} ) {
+			name: "this"
+			add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+				name: "scrollPane1"
+				add( new FormComponent( "javax.swing.JList" ) {
+					name: "list1"
+					"model": new javax.swing.DefaultListModel {
+						addElement( "test" )
+						addElement( "herp" )
+						addElement( "derp" )
+						addElement( "sdf" )
+						addElement( "her" )
+						addElement( "er" )
+						addElement( "s" )
+						addElement( "df" )
+					}
+					addEvent( new FormEvent( "javax.swing.event.ListSelectionListener", "valueChanged", "list1ValueChanged", true ) )
+					addEvent( new FormEvent( "java.awt.event.MouseListener", "mousePressed", "list1MousePressed", true ) )
+				} )
+			} )
+			add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+				name: "scrollPane2"
+				add( new FormComponent( "javax.swing.JList" ) {
+					name: "list2"
+					"model": new javax.swing.DefaultListModel {
+						addElement( "herpaderp" )
+						addElement( "herpaderpaderp" )
+					}
+					addEvent( new FormEvent( "javax.swing.event.ListSelectionListener", "valueChanged", "list2ValueChanged", true ) )
+					addEvent( new FormEvent( "java.awt.event.MouseListener", "mousePressed", "list2MousePressed", true ) )
+				} )
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "button1"
+				"text": "<"
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "button1ActionPerformed", true ) )
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "button2"
+				"text": "+"
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "button2ActionPerformed", true ) )
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "button3"
+				"text": "Ok"
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "button3ActionPerformed", true ) )
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "button4"
+				"text": "Cancel"
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "button4ActionPerformed", true ) )
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "button5"
+				"text": ">"
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "button5ActionPerformed", true ) )
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 0 )
+			"size": new java.awt.Dimension( 315, 315 )
+		} )
+	}
+}

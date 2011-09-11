@@ -1,0 +1,125 @@
+JFDML JFormDesigner: "5.1.0.0.9" Java: "1.6.0_26" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+			"$horizontalGroup": "par l {comp scrollPane1::l::244:x}"
+			"$verticalGroup": "par l {comp scrollPane1::t::372:x}"
+		} ) {
+			name: "this"
+			add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+				name: "scrollPane1"
+				add( new FormComponent( "javax.swing.JTree" ) {
+					name: "tree1"
+					"rootVisible": false
+					"model": new javax.swing.tree.DefaultTreeModel( new javax.swing.tree.DefaultMutableTreeNode {
+						userObject: "(root)"
+						add( new javax.swing.tree.DefaultMutableTreeNode {
+							userObject: "xzfzvnvqeuiphqaf xTurkishHackerx"
+						} )
+						add( new javax.swing.tree.DefaultMutableTreeNode {
+							userObject: "54hphqimrtnez2tk Verführer"
+						} )
+						add( new javax.swing.tree.DefaultMutableTreeNode {
+							userObject: "vzojh7jqwxbfmh55 Expect"
+						} )
+						add( new javax.swing.tree.DefaultMutableTreeNode {
+							userObject: "whhwrythmuwc6zcp maskNcloak"
+						} )
+						add( new javax.swing.tree.DefaultMutableTreeNode {
+							userObject: "fpsh2kpyl44rt2tt F@talErr.0r"
+						} )
+						add( new javax.swing.tree.DefaultMutableTreeNode {
+							userObject: "hwbm747nfyl2zqks Asshole"
+						} )
+						add( new javax.swing.tree.DefaultMutableTreeNode {
+							userObject: "7oj5u53estwg2pvu infoservAddressbooks"
+						} )
+						add( new javax.swing.tree.DefaultMutableTreeNode {
+							userObject: "qmk545l4nuulhytk Doom Prophet"
+						} )
+						add( new javax.swing.tree.DefaultMutableTreeNode {
+							userObject: "dzpvwdeb7jjwhxn2 anonfag"
+						} )
+						add( new javax.swing.tree.DefaultMutableTreeNode {
+							userObject: "6trhroaljx4zfzev slexplex2"
+						} )
+						add( new javax.swing.tree.DefaultMutableTreeNode {
+							userObject: "xpo6lqilqymo2tll Blackbird-NSA"
+						} )
+						add( new javax.swing.tree.DefaultMutableTreeNode {
+							userObject: "4fjjxjdmczyeomqz pro3phec"
+						} )
+						add( new javax.swing.tree.DefaultMutableTreeNode {
+							userObject: "m5sug27myzfxgbe6 Dreams"
+						} )
+						add( new javax.swing.tree.DefaultMutableTreeNode {
+							userObject: "ylvpf24ygwv5rmhb lifesign"
+						} )
+						add( new javax.swing.tree.DefaultMutableTreeNode {
+							userObject: "m34tfexauhc7lrmf Spielberg"
+						} )
+						add( new javax.swing.tree.DefaultMutableTreeNode {
+							userObject: "djtcxftb2pwmxjvk operator"
+						} )
+						add( new javax.swing.tree.DefaultMutableTreeNode {
+							userObject: "iw5zvvzckiumbhuc Thyrst"
+						} )
+						add( new javax.swing.tree.DefaultMutableTreeNode {
+							userObject: "imrrmuslbkzha5wl anonymousareusers"
+						} )
+						add( new javax.swing.tree.DefaultMutableTreeNode {
+							userObject: "ffrvqlx2on4k6fit anonymousareusers2"
+						} )
+						add( new javax.swing.tree.DefaultMutableTreeNode {
+							userObject: "rwfxtt23qnytwwsx Industrializer"
+						} )
+						add( new javax.swing.tree.DefaultMutableTreeNode {
+							userObject: "qj276qz22qijfpzg anonymousareusers2"
+						} )
+						add( new javax.swing.tree.DefaultMutableTreeNode {
+							userObject: "6k7b5iqj6bwwzd4f myself"
+						} )
+					} )
+					addEvent( new FormEvent( "javax.swing.event.TreeSelectionListener", "valueChanged", "tree1ValueChanged", true ) )
+					addEvent( new FormEvent( "java.awt.event.KeyListener", "keyReleased", "tree1KeyReleased", true ) )
+					addEvent( new FormEvent( "java.awt.event.MouseListener", "mousePressed", "tree1MousePressed", true ) )
+					addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseReleased", "tree1MouseReleased", true ) )
+				} )
+			} )
+			menuBar: new FormContainer( "javax.swing.JMenuBar", new FormLayoutManager( class javax.swing.JMenuBar ) ) {
+				name: "menuBar1"
+				add( new FormContainer( "javax.swing.JMenu", new FormLayoutManager( class javax.swing.JMenu ) ) {
+					name: "menu1"
+					"text": "File"
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "menuItem1"
+						"text": "Exit"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "menuItemActionPerformed", true ) )
+					} )
+				} )
+				add( new FormContainer( "javax.swing.JMenu", new FormLayoutManager( class javax.swing.JMenu ) ) {
+					name: "menu3"
+					"text": "View"
+					add( new FormComponent( "javax.swing.JCheckBoxMenuItem" ) {
+						name: "menuItem3"
+						"text": "Hide offline buddies"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "hideOfflineBudsActionPerformed", true ) )
+					} )
+				} )
+				add( new FormContainer( "javax.swing.JMenu", new FormLayoutManager( class javax.swing.JMenu ) ) {
+					name: "menu2"
+					"text": "Options"
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "menuItem4"
+						"text": "Settings"
+					} )
+				} )
+			}
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 0 )
+			"size": new java.awt.Dimension( 260, 430 )
+		} )
+	}
+}

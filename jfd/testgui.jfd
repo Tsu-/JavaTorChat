@@ -1,0 +1,72 @@
+JFDML JFormDesigner: "5.1.0.0.9" Java: "1.6.0_26" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+			"$horizontalGroup": "par l {comp splitPane1::l::289:x}"
+			"$verticalGroup": "par l {comp splitPane1::l::339:x}"
+		} ) {
+			name: "this"
+			"focusableWindowState": false
+			add( new FormContainer( "javax.swing.JSplitPane", new FormLayoutManager( class javax.swing.JSplitPane ) ) {
+				name: "splitPane1"
+				"orientation": 0
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+					"$horizontalGroup": "par l {seq l {space :::p, comp textField1:::p::p, space :::p, par l {comp label14:::p::p, comp label16:::p::p, comp label15:::p::p}, space :::p, comp label13::::155:x, space :::p}}"
+					"$verticalGroup": "par l {seq l {space :::p, par l {seq l:::1 {comp label14:::p::p, space ::36:x, comp label16:::p::p}, comp label13::l::64:x:1, par b:l {comp textField1::b:::x:1, comp label15::b:p::p}}, space :::x}}"
+				} ) {
+					name: "panel1"
+					"preferredSize": new java.awt.Dimension( 84, 86 )
+					"maximumSize": new java.awt.Dimension( 84, 86 )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "textField1"
+						"minimumSize": new java.awt.Dimension( 64, 64 )
+						"maximumSize": new java.awt.Dimension( 64, 64 )
+						"preferredSize": new java.awt.Dimension( 64, 64 )
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label13"
+						"text": "profile_text"
+						"verticalAlignment": 1
+						"horizontalAlignment": 11
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label14"
+						"text": "address"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label15"
+						"text": "name"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label16"
+						"text": "client"
+					} )
+				}, new FormLayoutConstraints( class java.lang.String ) {
+					"value": "left"
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+					"$horizontalGroup": "par l {comp textArea1::l::287:x, comp textArea2::l::287:x}"
+					"$verticalGroup": "par l {seq t {comp textArea1::::175:x, space :::p, comp textArea2:::p:65:p}}"
+				} ) {
+					name: "panel2"
+					add( new FormComponent( "javax.swing.JTextArea" ) {
+						name: "textArea1"
+						"editable": false
+					} )
+					add( new FormComponent( "javax.swing.JTextArea" ) {
+						name: "textArea2"
+						"text": "ddsfsdfs"
+						addEvent( new FormEvent( "java.awt.event.KeyListener", "keyReleased", "textArea2KeyReleased", true ) )
+					} )
+				}, new FormLayoutConstraints( class java.lang.String ) {
+					"value": "right"
+				} )
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 0 )
+			"size": new java.awt.Dimension( 305, 375 )
+		} )
+	}
+}
