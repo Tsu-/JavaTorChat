@@ -96,12 +96,13 @@ public class BuddyListGui extends JFrame {
 			popup.add(getMenuItem("Delete contact", al));
 			popup.add(getMenuItem("Edit groups", al));
 			popup.add(new JPopupMenu.Separator());
-			popup.add(getMenuItem("Add new contact", al));
-			popup.add(getMenuItem("Edit my profile", al));
-			popup.add(new JPopupMenu.Separator());
-			popup.add(getMenuItem("Settings", al));
-			popup.add(getMenuItem("Quit", al));
 		}
+
+		popup.add(getMenuItem("Add new contact", al));
+		popup.add(getMenuItem("Edit my profile", al));
+		popup.add(new JPopupMenu.Separator());
+		popup.add(getMenuItem("Settings", al));
+		popup.add(getMenuItem("Quit", al));
 
 		// String label = "popup: " + obj.getTreeLabel();
 		popup.show(tree, x, y);
@@ -153,8 +154,7 @@ public class BuddyListGui extends JFrame {
 	}
 
 	private void hideOfflineBudsActionPerformed(ActionEvent e) {
-		System.out.println(e.getSource().getClass());
-		System.out.println(e);
+		System.out.println("Toggle hide offline buds");
 		if (e.getSource() instanceof JCheckBoxMenuItem) {
 			JCheckBoxMenuItem jc = (JCheckBoxMenuItem) e.getSource();
 			if (jc.getActionCommand().equals("Hide offline buddies")) {
@@ -177,11 +177,12 @@ public class BuddyListGui extends JFrame {
 		// //GEN-BEGIN:initComponents
 		menuBar1 = new JMenuBar();
 		menu1 = new JMenu();
+		menuItem2 = new JMenuItem();
+		menuItem5 = new JMenuItem();
+		menuItem4 = new JMenuItem();
 		menuItem1 = new JMenuItem();
 		menu3 = new JMenu();
 		menuItem3 = new JCheckBoxMenuItem();
-		menu2 = new JMenu();
-		menuItem4 = new JMenuItem();
 		scrollPane1 = new JScrollPane();
 		tree1 = new JTree();
 
@@ -194,6 +195,20 @@ public class BuddyListGui extends JFrame {
 			//======== menu1 ========
 			{
 				menu1.setText("File");
+
+				//---- menuItem2 ----
+				menuItem2.setText("Add new contact");
+				menu1.add(menuItem2);
+
+				//---- menuItem5 ----
+				menuItem5.setText("Edit my profile");
+				menu1.add(menuItem5);
+				menu1.addSeparator();
+
+				//---- menuItem4 ----
+				menuItem4.setText("Settings");
+				menu1.add(menuItem4);
+				menu1.addSeparator();
 
 				//---- menuItem1 ----
 				menuItem1.setText("Exit");
@@ -222,16 +237,6 @@ public class BuddyListGui extends JFrame {
 				menu3.add(menuItem3);
 			}
 			menuBar1.add(menu3);
-
-			//======== menu2 ========
-			{
-				menu2.setText("Options");
-
-				//---- menuItem4 ----
-				menuItem4.setText("Settings");
-				menu2.add(menuItem4);
-			}
-			menuBar1.add(menu2);
 		}
 		setJMenuBar(menuBar1);
 
@@ -300,7 +305,7 @@ public class BuddyListGui extends JFrame {
 		);
 		contentPaneLayout.setVerticalGroup(
 			contentPaneLayout.createParallelGroup()
-				.addComponent(scrollPane1, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 372, Short.MAX_VALUE)
+				.addComponent(scrollPane1, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 373, Short.MAX_VALUE)
 		);
 		pack();
 		setLocationRelativeTo(getOwner());
@@ -318,11 +323,12 @@ public class BuddyListGui extends JFrame {
 	// //GEN-BEGIN:variables
 	private JMenuBar menuBar1;
 	private JMenu menu1;
+	private JMenuItem menuItem2;
+	private JMenuItem menuItem5;
+	private JMenuItem menuItem4;
 	private JMenuItem menuItem1;
 	private JMenu menu3;
 	private JCheckBoxMenuItem menuItem3;
-	private JMenu menu2;
-	private JMenuItem menuItem4;
 	private JScrollPane scrollPane1;
 	private JTree tree1;
 	// JFormDesigner - End of variables declaration //GEN-END:variables

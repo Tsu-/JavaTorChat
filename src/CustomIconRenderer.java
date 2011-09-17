@@ -52,9 +52,9 @@ public class CustomIconRenderer extends DefaultTreeCellRenderer {
 			if (!b.getProfile_text().equals(""))
 				s += "<BR>" + b.getProfile_name();
 			if (!b.getProfile_text().equals(""))
-				s += "<BR><BR>" + b.getProfile_text();
+				s += "<BR>" + b.getProfile_text();
 			if (!b.getClient().equals(""))
-				s += "<BR><BR>" + b.getClient() + " " + b.getVersion(); 
+				s += "<BR>" + b.getClient() + " " + b.getVersion(); 
 					
 			s += "</html>";
 			this.setToolTipText(s);
