@@ -417,6 +417,8 @@ public class Buddy {
 			conn_out.flush();
 		} catch (Exception e) {
 			System.err.println("Send command failed");
+			ourSock.close();
+			ourSock = null;
 			connect();
 		}
 //		String os = ourSock == null ? "ourSock == null" : (ourSock.isClosed() + ", " + ourSock.isConnected() + ", " + ourSock.isInputShutdown() + ", " + ourSock.isOutputShutdown());
