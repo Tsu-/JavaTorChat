@@ -19,9 +19,9 @@ public class Connection extends Thread {
 			Scanner sc = new Scanner(s.getInputStream());
 			String l = sc.nextLine();
 			
-			System.out.println(s.getRemoteSocketAddress() + " | " + l);
+//			System.out.println(s.getRemoteSocketAddress() + " | " + l);
 //			if (l.split(" ")[1].equals("6k7b5iqj6bwwzd4f")) {
-			System.out.println(l);
+//			System.out.println(l);
 			if (tc.getBl().hasBuddy(l.split(" ")[1])) {
 				 tc.getBl().getBuddy(l.split(" ")[1]).attatch(s, l, sc);
 //				TorChat.t.attatch(s, l, sc);

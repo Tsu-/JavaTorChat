@@ -19,21 +19,16 @@ public class Buddy {
 	public static final int STATUS_ONLINE = 2;
 	public static final int STATUS_AWAY = 3;
 	public static final int STATUS_XA = 4;
+	private static final int THEIR_CONNECTION = 1;
+	private static final int OUR_CONNECTION = 2;
+	private static final int BOTH_CONNECTIONS = 3;
 
 	private String address;
 	
-	private Socket ourSock;
-	private OutputStream conn_out;
-	
-	private Socket theirSock;
-	private InputStream conn_in;
-//	private boolean connected;
 	private boolean recievedPong = false;
 //	private boolean sentPong;
 
 	private boolean sentPing;
-
-	private Thread connectThread;
 //	private gui gui;
 	BuddyList bl; // our buddylist
 	private String name; // our nickname of them
@@ -73,8 +68,11 @@ public class Buddy {
 	private static char lf = (char) 10;
 	protected HashMap<String, BuddyGroup> groups = new HashMap<String, BuddyGroup>();
 	protected Thread prevTask;
-	private Thread _attatchThread;
 	private int pstatus;
+	private Thread connectThread;
+	protected Socket ourSock;
+	protected OutputStream conn_out;
+	private Socket theirSock;
 
 	public Buddy(String address, String name, boolean temporary, BuddyList bl, TorChat tc) {
 //		System.out.println(String.format("(2) initializing buddy %s, temporary=%s", address, temporary));
@@ -162,14 +160,7 @@ public class Buddy {
 	    		public void run() {
 	    			prevTask = Thread.currentThread();
 	    			try {
-	    				if (ourSock != null && ourSock.isConnected() && checkConnected()) {
-	    					keepAlive();
-//	    					sendStatus(); // in keepAlive
-//	    					System.out.println("Sent status to " + address);
-	    				} else {
-//	    					System.out.println("Didnt send status to " + address);
-	    					connect();
-	    				}
+	    				keepAlive();
 	    			} catch (IOException e) {
 	    				e.printStackTrace();
 	    			}
@@ -199,157 +190,111 @@ public class Buddy {
 	}
 	
 	public void connect() throws IOException {
-//		Thread.dumpStack();
-		if (connectThread != null && connectThread.isAlive()) {
-//			System.out.println("ITS ALIVE!");
-			return; // dont want multiple connections at once
+		if (ourSock != null) {
+			System.out.println("[DENY EVENT]	" + this.address + " Connect request denied");
+			return;
 		}
-//		if (ourSock != null && ourSock.isConnected()) // && !ourSock.isOutputShutdown())
-//			return;
 		active = false;
         this.count_unanswered_pings = 0;
 		connectThread = new Thread() {
 			public void run() {
-//				System.out.println("Connection thread " + this + " started");
-//				while(true) {
 				setStatus(Buddy.STATUS_OFFLINE);
-//				System.out.println(this + " active " + active);
 				try {
 					ourSock = new Socket(new Proxy(Proxy.Type.SOCKS, new InetSocketAddress("127.0.0.1", Config.SOCKS_PORT)));
-//					System.out.println("proxy " + address + ".onion:11009");
 					ourSock.connect(new InetSocketAddress(address + ".onion", 11009));
+
+					System.out.println("[Connect Event]	" + address);
+					
 					setStatus(Buddy.STATUS_HANDSHAKE);
-					System.out.println(address + " connected!");
 					conn_out = ourSock.getOutputStream();
-//					this.i = ourSock.getInputStream();
-//					if (checkConnected()) {
-						sendPing();
-//						connected = true;
-//					} else
-//						System.out.println("[ERR] Just connected but not connected anymore. WTF?");
-//						break;
-				} catch (IOException e) {
+
+					sendPing();
+					
+				} catch (Exception e) {
+					ourSock = null;
+					count_failed_connects++;
+					setStatus(Buddy.STATUS_OFFLINE);
 					if (e.getMessage().equals("SOCKS: TTL expired")
 							|| e.getMessage().equals("SOCKS: Host unreachable")
 							|| e.getMessage().equals("Connection refused: connect")
 							|| e.getMessage().equals("Connection reset")
 							|| e.getMessage().equals("SOCKS server general failure")) {
 						
-					} else {
+					} else
 						e.printStackTrace();
-					}
-					count_failed_connects++;
-					setStatus(Buddy.STATUS_OFFLINE);
 				}
-//				}
 
 				active = true;
 				startTimer();
-//				System.out.println(this + " active " + active);
-//				System.out.println("Connection thread " + this + " died");
+//				System.out.println("[AST Event]		" + address);
+				if (ourSock != null && ourSock.isConnected() && !ourSock.isClosed()
+						&& theirSock != null && theirSock.isConnected() && !theirSock.isClosed())
+					try {
+						onFullyConnected();
+					} catch (IOException e) { e.printStackTrace(); }
 			}
 			
 		};
 		connectThread.start();
 	}
 	
+	public void onFullyConnected() throws IOException {
+		System.out.println("[oFC Event]		" + address);
+		sendClient();
+		sendVersion();
+		sendProfileName();
+		sendProfileText();
+		if (true) // should be checking if on buddy list
+			sendAddMe();
+		sendStatus();
+		startTimer();
+		trySendDelayedMessages();
+	}
+	
 	public void attatch(Socket ts, String ping, Scanner sc) throws IOException {
-		if (connectThread != null && connectThread.isAlive())
+		String tCommand = ping.split(" ")[0];
+		String tAddress = ping.split(" ")[1];
+		String tPing = ping.split(" ")[2];
+		if (!tCommand.equalsIgnoreCase("ping") || !tAddress.equals(this.address)) {	// FIXME need to check previous pings to check that they match up
+			System.out.println("[DENY EVENT]	" + this.address + " rejected ping");
+			return;
+		}
+		
+		System.out.println("[Attatch Event]	" + this.address + " " + ping + " || at " 
+				+ (connectThread != null ? !connectThread.isAlive() : null) + " ourSock" + ourSock != null);
+		if (ourSock == null && (connectThread == null || !connectThread.isAlive()))
+			this.connect();
+		if (connectThread.isAlive())
 			try {
 				connectThread.join();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		try {
-			System.out.println("DC CUZ NEW CON");
-//			if (theirSock != null)
-//				theirSock.close();
-		} catch (Exception e) {}
-//		if ((ts.isConnected() || !ts.isClosed())
-//				&& ts != theirSock)
-//			ts.close();
-		if (_attatchThread != null && _attatchThread.isAlive()) {
-			_attatchThread.interrupt();
-			
+			} catch (InterruptedException e) { e.printStackTrace(); }
+		
+		theirSock = ts;
+		
+		if (!sentPing)
+			System.err.println("Herm, we should have already sent a ping, wtf");
+//			sendPing();
+		sendPong(tPing);
+		
+		if (ourSock.isConnected() && !ourSock.isClosed()
+				&& theirSock.isConnected() && !theirSock.isClosed())
+			onFullyConnected();
+		
+		String l;		
+		while (sc.hasNextLine()) {
+			l = sc.nextLine();
+			try {
+				executeCommand(l);
+			}catch (Exception e) { e.printStackTrace(); }
 		}
-		_attatchThread = Thread.currentThread();
-		String[] s = ping.split(" ");
-		if (s[0].equals("ping")
-				&& s[1].equals(address)) { // looks legit
-			if (connectThread == null || !connectThread.isAlive() && !checkConnected())
-				connect();
-			if (connectThread.isAlive())
-				try {
-					connectThread.join(); // wait for connect //TODO
-				} catch (InterruptedException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			this.theirSock = ts;
-			conn_in = theirSock.getInputStream();
-			if (!sentPing)
-				sendPing();
-			sendPong(s[2]);
-			sendClient();
-			sendVersion();
-			sendProfileName();
-			sendProfileText();
-			if (true) // should be checking if on buddy list
-				sendAddMe();
-			sendStatus();
-			startTimer();
-			
-//			gui = bl.getGui(address);
-			
-//			sendCommand("test");
-//			System.out.println("Sent our data to " + address);
-
-//			sendStatus();
-			trySendDelayedMessages();
-			
-			String l;
-
-			System.out.println("b");
-			while (theirSock.isConnected() && !theirSock.isInputShutdown() && !theirSock.isOutputShutdown()) {
-				System.out.println("c");
-				// (!connectThread.isAlive() && !checkConnected()) || 
-				if (theirSock.isInputShutdown() || theirSock.isOutputShutdown()) {
-					System.err.println("Flying f");
-					break; // TODO FIXME creates an infinite loop which MURDERS cpu
-				}
-				System.out.println("a" + sc.hasNextLine() + " " + sc.ioException() + ", " + theirSock.isClosed() + ", " + theirSock.isConnected()); //TODO had c,a loop check it out alters
-				if (!sc.hasNextLine()) {
-					System.err.println("Like a boss");
-					if (ourSock.isClosed())
-						this.disconnect(true);
-					else // TODO
-						this.disconnect(false);
-					connect();
-					break;
-				}
-					
-				while (sc.hasNextLine() && (l = sc.nextLine()) != null) {
-					checkConnected();
-					checkTheirSock();
-					try {
-						executeCommand(l);
-					}catch (Exception e) {e.printStackTrace();}
-				}
-				if (!theirSock.isClosed())
-					sc = new Scanner(theirSock.getInputStream());
-				try {
-					Thread.sleep(9001);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-			System.err.println("shit");
-		}
+		System.out.println("[AtDie Event]	" + this.address + " || " + 
+				(ourSock == null ? "ourSock == null" : ourSock.isConnected() + ", " + !ourSock.isClosed()) 
+				+ " ||" + (theirSock == null ? "theirSock == null" 
+						: theirSock.isConnected() + ", " + !theirSock.isClosed()));
 	}
 	
 	private void trySendDelayedMessages() throws IOException {
-		if (checkConnected() && status != STATUS_HANDSHAKE 
-				&& this.status != STATUS_OFFLINE 
+		if (status != STATUS_HANDSHAKE && this.status != STATUS_OFFLINE 
 				&& delayedMessages.size() > 0) { // assume we have fully connected
 			for (String ss : delayedMessages)
 				sendMessage("[Delayed] " + ss);
@@ -392,9 +337,9 @@ public class Buddy {
 				last_status_time = System.currentTimeMillis();
 				if (s[1].equals("xa"))
 					setStatus(Buddy.STATUS_XA);
-				else  if (s[1].equals("away"))
+				else if (s[1].equals("away"))
 					setStatus(Buddy.STATUS_OFFLINE);
-				else  if (s[1].equals("available"))
+				else if (s[1].equals("available"))
 					setStatus(Buddy.STATUS_ONLINE);
 				trySendDelayedMessages();
 //				avatar.doe();
@@ -456,13 +401,11 @@ public class Buddy {
 	}
 
 	private void sendCommand(String s) throws IOException {
-//		checkConnected();
-		
 		try {
 			conn_out.write((s + "" + lf).getBytes());
 			conn_out.flush();
 		} catch (Exception e) {
-			checkConnected();
+			System.err.println("Send command failed");
 			connect();
 		}
 //		String os = ourSock == null ? "ourSock == null" : (ourSock.isClosed() + ", " + ourSock.isConnected() + ", " + ourSock.isInputShutdown() + ", " + ourSock.isOutputShutdown());
@@ -474,9 +417,9 @@ public class Buddy {
 	
 	private void sendPing() throws IOException {
 		try {
-//			System.out.println("guess wut");
 			sendCommand("ping " + TorChat.us  + " " + random1);
 		} catch (IOException e) {
+			System.err.println("Ping failed");
 			if (!connectThread.isAlive()) {
 				connect();
 			}
@@ -507,7 +450,7 @@ public class Buddy {
 	}
 
 	public void sendMessage(String s) throws IOException {
-		if (!checkConnected() || this.status == STATUS_HANDSHAKE  || this.status == STATUS_OFFLINE)
+		if (this.status == STATUS_HANDSHAKE  || this.status == STATUS_OFFLINE)
 			delayedMessages.add(s);
 		else
 			try {
@@ -518,19 +461,6 @@ public class Buddy {
 					connect();
 				}
 			}
-	}
-	
-	private boolean checkConnected() {
-		try {
-			conn_out.write(new byte[0]);
-			conn_out.flush();
-			if (ourSock != null && ourSock.isConnected() && !ourSock.isOutputShutdown())
-				return true;
-		} catch (Exception e) {
-			return false;
-		}
-
-		return false;
 	}
 
 	private void sendPong(String s) throws IOException {
@@ -554,18 +484,6 @@ public class Buddy {
 		sendCommand("client " + bl.tc.getClient());
 	}
 	
-	private boolean checkTheirSock() {
-		if (theirSock.isConnected())
-			return true;
-
-		return false;
-	}
-
-//	public void registerGui(gui g) {
-//		this.gui = g;
-//		gui.setTitle("Chat with " + getDisplayName());
-//	}
-
 	public String getCookie() {
 		return random1;
 	}
@@ -578,21 +496,18 @@ public class Buddy {
 			bl.getGui(address).toFront();
 	}
 
-	private void keepAlive() throws IOException {
+	private void keepAlive() throws IOException { // FIXME
 //		System.out.println(String.format("(2) %s.keepAlive()", this.address));
 		if ((System.currentTimeMillis() - this.last_status_time) > (Config.DEAD_CONNECTION_TIMEOUT*1000)) {
 			System.out.println("Dead connection timeout " + (System.currentTimeMillis() - this.last_status_time) + " > " + (Config.DEAD_CONNECTION_TIMEOUT*1000));
-			this.disconnect(false); // FIXME
-			if (ourSock.isClosed())
-				this.connect();
-			else
-				sendPing();
+			this.disconnect(BOTH_CONNECTIONS); // FIXME if its dead, well meh
+			this.connect();
 			return;
 		}
         if (this.conn_out == null || this.ourSock == null || this.ourSock.isOutputShutdown()) {
         	this.connect();
         } else {
-            if (this.conn_in != null && this.theirSock != null && !this.theirSock.isInputShutdown()) {
+            if (this.theirSock != null && !this.theirSock.isInputShutdown()) {
 //            	System.out.println("Trying to status " + this);
             	if (this.recievedPong)
             		this.sendStatus();
@@ -607,32 +522,25 @@ public class Buddy {
                 } else {
                     // maybe this will help
 //                	System.out.println(String.format("(2) too many unanswered pings to %s on same connection", this.address)); 
-                	this.disconnect(true);
+                	this.disconnect(BOTH_CONNECTIONS);
                 }
             }
         }
 //		System.out.println(String.format("(2) %s.keepAlive() done", this.address));
 	}
 
-	private void disconnect(boolean fullDC) { // false - dc conn_in, true - dc both
-		System.out.println("DC " + fullDC + " | " + this);
-		this.count_unanswered_pings = 0;
-		this.last_status_time = System.currentTimeMillis() + (Config.DEAD_CONNECTION_TIMEOUT / 2);
-//		Thread.dumpStack();
-		try {
-			if (fullDC)
-				conn_out.close();
-		} catch (Exception e) {}
-		try {
-			conn_in.close();
-		} catch (Exception e) {}
-		try {
-			if (fullDC)
-				ourSock.close();
-		} catch (Exception e) {}
-		try {
+	private void disconnect(int t) throws IOException {
+		// TODO Auto-generated method stub
+		System.out.println("[DC Event]	 for " + this.address + " " + (t == BOTH_CONNECTIONS ? "BOTH_CONNECTIONS" 
+				: t == THEIR_CONNECTION ? "THEIR_CONNECTION" : t == OUR_CONNECTION ? "OUR_CONNECTION" : t));
+		if (theirSock != null && (t == THEIR_CONNECTION || t == BOTH_CONNECTIONS) ){
 			theirSock.close();
-		} catch (Exception e) {}
+			theirSock = null;
+		}
+		if (ourSock != null && (t == OUR_CONNECTION || t == BOTH_CONNECTIONS)) {
+			ourSock.close();
+			ourSock = null;
+		}
 	}
 
 	public String getProfile_name() {
