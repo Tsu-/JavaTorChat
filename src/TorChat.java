@@ -1,9 +1,9 @@
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.math.BigInteger;
 import java.util.Scanner;
 
 import javax.swing.UIManager;
@@ -64,11 +64,11 @@ public class TorChat {
 		TCServer tsc = new TCServer(this);
 		tsc.start();
 		bl.loadBuddies();
+		GroupConvo g = new GroupConvo();
+		
+		System.out.println(new BigInteger("fs6qgtdynha3p6rn", 36).toString());
 //		bl.loadBuddiesOL();
 		
-		// testgui tg = new testgui();
-		// tg.setVisible(true);
-		// tsc.checkServer();
 
 		debug();
 	}
@@ -77,24 +77,24 @@ public class TorChat {
 		Scanner s = new Scanner(System.in);
 		while(s.hasNextLine()) {
 			String l = s.nextLine();
-			if (l.startsWith("version ")) {
-				this.version = l.split(" ", 2)[1];
-			}
-			if (l.startsWith("client ")) {
-				this.client = l.split(" ", 2)[1];
-			}
+//			if (l.startsWith("version ")) {
+//				this.version = l.split(" ", 2)[1];
+//			}
+//			if (l.startsWith("client ")) {
+//				this.client = l.split(" ", 2)[1];
+//			}
 			if (l.startsWith("lblol")) {
 				bl.loadBuddiesOL();
 			}
-			if (l.startsWith("ping ")) {
-				Buddy b = bl.getBuddy(l.split(" ")[1]);
-				try {
-					b.sendStatus();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
+//			if (l.startsWith("ping ")) {
+//				Buddy b = bl.getBuddy(l.split(" ")[1]);
+//				try {
+//					b.sendStatus();
+//				} catch (IOException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//			}
 		}
 	}
 

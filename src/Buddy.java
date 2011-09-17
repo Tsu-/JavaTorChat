@@ -74,6 +74,16 @@ public class Buddy {
 	protected OutputStream conn_out;
 	private Socket theirSock;
 	private int atFail;
+	private boolean supportsGroupConvo = false;
+	private String currentQuery;
+
+	public boolean isSupportsGroupConvo() {
+		return supportsGroupConvo;
+	}
+
+	public void setSupportsGroupConvo(boolean supportsGroupConvo) {
+		this.supportsGroupConvo = supportsGroupConvo;
+	}
 
 	public Buddy(String address, String name, boolean temporary, BuddyList bl, TorChat tc) {
 //		System.out.println(String.format("(2) initializing buddy %s, temporary=%s", address, temporary));
@@ -247,11 +257,18 @@ public class Buddy {
 		sendProfileText();
 		if (true) // should be checking if on buddy list
 			sendAddMe();
+		sendQueryGConvoSupport();
 		sendStatus();
 		startTimer();
 		trySendDelayedMessages();
 	}
 	
+	private void sendQueryGConvoSupport() throws IOException {
+		// TODO Auto-generated method stub
+		sendCommand("query sgc");
+		currentQuery = "sgc";
+	}
+
 	public void attatch(Socket ts, String ping, Scanner sc) throws IOException {
 		String tCommand = ping.split(" ")[0];
 		String tAddress = ping.split(" ")[1];
@@ -369,7 +386,21 @@ public class Buddy {
 				profile_name = l.split(" ", 2)[1];
 				if (bl.getGui(address) != null)
 					bl.getGui(address).setTitle("Chat with " + getDisplayName(true));
-			} 
+			} else if (l.startsWith("not_implemented")) {
+				if (currentQuery.equals("sgc")) {
+					supportsGroupConvo = false;
+					System.out.println(this.address + " doesnt support group convos");
+				}
+			} else if (l.equals("sgc")) {
+				if (currentQuery.equals("sgc")) {
+					supportsGroupConvo = true;
+					System.out.println(this.address + " supports group convos");
+				}
+			} else if (l.startsWith("query ")) {
+				if (l.split(" ")[1].equals("sgc")) {
+					sendCommand("sgc");
+				}
+			}
 //			else if (parsingAvataralpha)
 //				avatar.parseLineA(l);
 //			 else if (s[0].equals("profile_avatar_alpha")) {
@@ -411,7 +442,7 @@ public class Buddy {
 		return this.address + " " + this.getDisplayName(false); // used in JTree
 	}
 
-	private void sendCommand(String s) throws IOException {
+	void sendCommand(String s) throws IOException {
 		try {
 			conn_out.write((s + "" + lf).getBytes());
 			conn_out.flush();
@@ -574,7 +605,7 @@ public class Buddy {
 		this.groups.put(bg.getName(), bg);
 	}
 	
-	public void log (String s) {
+	public void log(String s) {
 		int i = Integer.parseInt(s.split("(")[1].split(")")[0]);
 		if (i > 2)
 			System.out.println(s);
