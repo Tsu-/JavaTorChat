@@ -73,6 +73,7 @@ public class Buddy {
 	protected Socket ourSock;
 	protected OutputStream conn_out;
 	private Socket theirSock;
+	private int atFail;
 
 	public Buddy(String address, String name, boolean temporary, BuddyList bl, TorChat tc) {
 //		System.out.println(String.format("(2) initializing buddy %s, temporary=%s", address, temporary));
@@ -280,12 +281,22 @@ public class Buddy {
 				&& theirSock.isConnected() && !theirSock.isClosed())
 			onFullyConnected();
 		
-		String l;		
-		while (sc.hasNextLine()) {
-			l = sc.nextLine();
-			try {
-				executeCommand(l);
-			}catch (Exception e) { e.printStackTrace(); }
+		String l;
+		atFail = 0;
+		long t = System.currentTimeMillis();
+		while (theirSock != null) {
+			while (sc.hasNextLine()) {
+				l = sc.nextLine();
+				try {
+					executeCommand(l);
+				}catch (Exception e) { e.printStackTrace(); }
+			}
+			if (theirSock == null || theirSock.isClosed() || !theirSock.isConnected() || System.currentTimeMillis() - t < 10000)
+				break;
+			t = System.currentTimeMillis();
+			atFail++;
+			System.out.println("[atFail Count]	" + this.address + " " + this.atFail);
+			sc = new Scanner(theirSock.getInputStream());
 		}
 		System.out.println("[AtDie Event]	" + this.address + " || " + 
 				(ourSock == null ? "ourSock == null" : ourSock.isConnected() + ", " + !ourSock.isClosed()) 
