@@ -45,7 +45,8 @@ public class groups extends JFrame {
 		list1.setModel(model);
 		i = 0;
 		for (Entry<String, BuddyGroup> e : bl.buddyGroups.entrySet()) {
-			model.add(i++, e.getValue());
+			if (!b.groups.containsValue(e.getValue()))
+				model.add(i++, e.getValue());
 		}
 	}
 
@@ -88,7 +89,7 @@ public class groups extends JFrame {
 
 	private void button2ActionPerformed(ActionEvent e) {
 		// TODO add your code here
-		String g = JOptionPane.showInputDialog(this, "Enter group name", "Enter group name", JOptionPane.QUESTION_MESSAGE);
+		String g = JOptionPane.showInputDialog(this, "Enter group name", "Create group", JOptionPane.QUESTION_MESSAGE);
 		if (bl.buddyGroups.containsKey(g)) {
 			return;
 		} else {

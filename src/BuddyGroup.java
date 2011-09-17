@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.HashMap;
 
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -45,10 +46,17 @@ public class BuddyGroup extends BuddyList {
 	
 	public void remove(Buddy b) {
 		// TODO Auto-generated method stub
-		b.groups.remove(this);
+		b.groups.remove(this.name);
 		buddies.remove(b.getAddress());
-		budNodes.remove(b.getAddress());
+		budNodes.remove(b.getAddress()).removeFromParent();
 		buddiesByCookie.remove(b.getCookie());
+		blg.getTree1().updateUI();
+		try {
+			b.bl.saveBuddies();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Override
