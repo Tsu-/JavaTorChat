@@ -22,7 +22,7 @@ public class gconvo extends JFrame {
 			if (!textArea2.getText().trim().equals("")) {
 				try {
 					String msg = textArea2.getText().trim().replaceAll(((char) 10) + "", "\\\\n").replaceAll("\r", "");
-					textArea1.insert("Me: " + textArea2.getText().trim() + "\n", textArea1.getText().length());
+//					textArea1.insert("Me: " + textArea2.getText().trim() + "\n", textArea1.getText().length());
 //					System.out.println(msg + " | " + textArea2.getText());
 					if (msg.trim().endsWith("\\\\n")) {
 //						System.out.println("s");
@@ -100,6 +100,10 @@ public class gconvo extends JFrame {
 		pack();
 		setLocationRelativeTo(getOwner());
 		// JFormDesigner - End of component initialization  //GEN-END:initComponents
+	}
+
+	public JTextArea getTextArea1() {
+		return textArea1;
 	}
 
 	// JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables

@@ -86,6 +86,9 @@ public class BuddyList {
 	}
 	
 	public void addBuddy(Buddy b) {
+		if (b.getAddress().equals(TorChat.us))
+			tc.bUs = b;
+		
 		buddies.put(b.getAddress(), b);
 		buddiesByCookie.put(b.getCookie(), b);
 		
@@ -273,7 +276,10 @@ public class BuddyList {
 				}
 			}
 		}
-
+		if (!hasBuddy(TorChat.us)) {
+			Buddy b = new Buddy(TorChat.us, tc.getProfile_name(), false, this, tc);
+			addBuddy(b);
+		}
 		blg.getTree1().updateUI();
 	}
 	

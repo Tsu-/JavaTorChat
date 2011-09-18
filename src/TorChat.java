@@ -4,7 +4,10 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigInteger;
+import java.util.HashMap;
 import java.util.Scanner;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -15,6 +18,12 @@ public class TorChat {
 	private String profile_text = "";
 	private String version = "dev";
 	private String status = "available";
+	private BuddyListGui blg = new BuddyListGui();
+	private BuddyList bl = new BuddyList(this, blg);
+	protected Process torProccess;
+	public static String us = "whi3dc7xmy7bqg7w";
+	public Buddy bUs;
+	public HashMap<String, GroupConvo> gconvos = new HashMap<String, GroupConvo>();
 
 	public String getProfile_name() {
 		return profile_name;
@@ -48,15 +57,10 @@ public class TorChat {
 		return version;
 	}
 
-	private BuddyListGui blg = new BuddyListGui();
-	private BuddyList bl = new BuddyList(this, blg);
-	protected Process torProccess;
-
 	public BuddyList getBl() {
 		return bl;
 	}
 
-	public static String us = "whi3dc7xmy7bqg7w";
 
 	public TorChat() throws IOException {
 		if (!Config.TESTING)
@@ -64,13 +68,50 @@ public class TorChat {
 		TCServer tsc = new TCServer(this);
 		tsc.start();
 		bl.loadBuddies();
-		GroupConvo g = new GroupConvo();
-		
-		System.out.println(new BigInteger("fs6qgtdynha3p6rn", 36).toString());
+
+		startConnectionReseter();
 //		bl.loadBuddiesOL();
 		
 
 		debug();
+	}
+
+	private void startConnectionReseter() {
+		// TODO Auto-generated method stub
+		Timer t = new Timer();
+		t.scheduleAtFixedRate(new TimerTask() {
+
+			@Override
+			public void run() {
+				for (final Buddy b : bl.buddies.values()) {
+					if (b.getStatus() == Buddy.STATUS_HANDSHAKE && System.currentTimeMillis() - b.getLast_status_time() > 130000) {
+						try {
+							b.disconnect(Buddy.BOTH_CONNECTIONS, "Connection Resseter");
+						} catch (IOException e) {}
+					} 
+					if (b.getStatus() == Buddy.STATUS_OFFLINE && System.currentTimeMillis() - b.getLast_status_time() > 60000 && b.ourSock != null && b.ourSock.isConnected() && !b.ourSock.isClosed()) {
+						try {
+							b.disconnect(Buddy.BOTH_CONNECTIONS, "Connection ResseterX");
+						} catch (IOException e) {}
+					}
+					if (System.currentTimeMillis() > b.nextTimerTime) {
+						new Thread() {
+							public void run() {
+								b.kaCount++;
+								try {
+									b.keepAlive();
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
+								b.startTimer();
+								b.kaCount--;
+							}
+						}.start();
+					}
+				}
+			}
+			
+		}, 60, 60);
 	}
 
 	private void debug() {
@@ -86,6 +127,17 @@ public class TorChat {
 			if (l.startsWith("lblol")) {
 				bl.loadBuddiesOL();
 			}
+
+			if (l.startsWith("test")) {
+				try {
+					GroupConvo g = new GroupConvo(bUs);
+					g.addParticipant(bl.getBuddy("u5sfgxa3gxosabvz"));
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
 //			if (l.startsWith("ping ")) {
 //				Buddy b = bl.getBuddy(l.split(" ")[1]);
 //				try {

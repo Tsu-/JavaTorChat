@@ -17,7 +17,7 @@ public class TCServer extends Thread{
 		this.tc = tc;
 		isRunning = true;
 		try {
-			sc = new ServerSocket(8975);
+			sc = new ServerSocket(Config.LOCAL_PORT);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
