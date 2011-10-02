@@ -64,6 +64,26 @@ public class BuddyListGui extends JFrame {
 						setEnabled(false);
 						g.setVisible(true);
 					}
+					if (ac.equals("NEW GROUP CONVO")) {
+//						groups g = new groups(b, bl.blg);
+//						setEnabled(false);
+//						g.setVisible(true);
+						GroupConvo g = new GroupConvo(bl.tc.bUs);
+						try {
+							g.addParticipant(b);
+						} catch (IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+					}
+					if (ac.startsWith("ADD TO ")) {
+						try {
+							bl.tc.gconvos.get(ac.split(" ")[2].toLowerCase()).addParticipant(b);
+						} catch (IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+					}
 				}
 
 				if (ac.equals("ADD NEW CONTACT")) {
@@ -96,6 +116,16 @@ public class BuddyListGui extends JFrame {
 			popup.add(getMenuItem("Delete contact", al));
 			popup.add(getMenuItem("Edit groups", al));
 			popup.add(new JPopupMenu.Separator());
+//			if (bl.tc.gconvos.values().size() > 0) {
+				JMenu gc = getMenu("Group Chat", al);
+				popup.add(gc);
+				for (GroupConvo gcc : bl.tc.gconvos.values()) {
+					if (gcc.isHost())
+						gc.add(getMenuItem("Add to " + gcc.getId(), al));
+				}
+				gc.add(getMenuItem("New group convo", al));
+				popup.add(new JPopupMenu.Separator());
+//			}
 		}
 
 		popup.add(getMenuItem("Add new contact", al));
@@ -114,6 +144,14 @@ public class BuddyListGui extends JFrame {
 		menuItem.addActionListener(al);
 		// menuItem
 		return menuItem;
+	}
+	
+	private JMenu getMenu(String s, ActionListener al) {
+		JMenu menu = new JMenu(s);
+		menu.setActionCommand(s.toUpperCase());
+		menu.addActionListener(al);
+		// menuItem
+		return menu;
 	}
 
 	private void tree1KeyReleased(KeyEvent e) {
@@ -170,6 +208,16 @@ public class BuddyListGui extends JFrame {
 		if (ac.equals("Exit")) {
 			bl.tc.exit();
 		}
+		if (ac.equalsIgnoreCase("ADD NEW CONTACT")) {
+			addgui ag = new addgui(bl.blg);
+			setEnabled(false);
+			ag.setVisible(true);
+		}
+		if (ac.equalsIgnoreCase("EDIT MY PROFILE")) {
+			editmyprofile emp = new editmyprofile(bl.blg);
+			setEnabled(false);
+			emp.setVisible(true);
+		}
 	}
 
 	private void initComponents() {
@@ -189,7 +237,7 @@ public class BuddyListGui extends JFrame {
 		//======== this ========
 		Container contentPane = getContentPane();
 
-		//======== menuBar1 ========
+		//======== menuBar1 =======
 		{
 
 			//======== menu1 ========
@@ -198,10 +246,22 @@ public class BuddyListGui extends JFrame {
 
 				//---- menuItem2 ----
 				menuItem2.setText("Add new contact");
+				menuItem2.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						menuItemActionPerformed(e);
+					}
+				});
 				menu1.add(menuItem2);
 
 				//---- menuItem5 ----
 				menuItem5.setText("Edit my profile");
+				menuItem5.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						menuItemActionPerformed(e);
+					}
+				});
 				menu1.add(menuItem5);
 				menu1.addSeparator();
 
